@@ -1,10 +1,16 @@
 from dash import Dash, html, dcc, callback, Output, Input
 import plotly.express as px
 import pandas as pd
+import os
 
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv')
 
-app = Dash(__name__)
+user = os.getenv('JUPYTERHUB_USER')
+
+app = Dash(
+    __name__,
+    requests_pathname_prefix=f"/jupyterhub/user/{user}/"
+)
 
 app.layout = html.Div([
     html.H1(children='Title of Dash App', style={'textAlign':'center'}),
@@ -21,4 +27,4 @@ def update_graph(value):
     return px.line(dff, x='year', y='pop')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=8050)
