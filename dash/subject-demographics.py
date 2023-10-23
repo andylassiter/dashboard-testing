@@ -104,17 +104,17 @@ def render_page_content(pathname):
     )
 
 def render_home():
-    return dbc.Container([
-        dbc.Col([
-            dbc.Row([
-                html.Div([
+    return html.Div(
+        [
+            dbc.Row(
+                [
                     html.P(f"Project: {project_id}", className="lead"),
                     html.P(f"Subjects: {len(project.subjects)}", className="lead"),
                     html.P(f"Experiments: {len(project.experiments)}", className="lead"),
-                ])
-            ])
-        ])
-    ], fluid=True) 
+                ]
+            ),
+        ]
+    ) 
 
 def render_iris():
     df = px.data.iris()
