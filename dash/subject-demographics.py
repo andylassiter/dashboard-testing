@@ -114,10 +114,11 @@ def render_iris():
     df = px.data.iris()
     fig = px.scatter(df, x="sepal_width", y="sepal_length")
     
-    return html.Div([
-        html.P("Iris Data", className="lead"),
-        dcc.Graph(id='iris-graph', figure=fig),
-    ])
+    return dbc.Container([
+        dbc.Col([
+            dcc.Graph(figure=fig, id='my-first-graph-final')
+        ], width=6),
+    ], fluid=True)
 
 
 # def render_subjects():
