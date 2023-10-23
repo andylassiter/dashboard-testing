@@ -12,7 +12,8 @@ documentation: https://dash.plot.ly/urls
 """
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, dcc, html
+import os
+from dash import Dash, html, dcc, callback, Output, Input
 
 user = os.getenv('JUPYTERHUB_USER')
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
