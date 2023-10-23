@@ -114,19 +114,19 @@ def render_home():
                     html.P(f"Subjects: {len(project.subjects)}", className="lead"),
                     html.P(f"Experiments: {len(project.experiments)}", className="lead"),
                 ]),
-                dbc.Row([
-                    dbc.Col([
-                        dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
-                    ])
-                ]),
-                dbc.Row([
-                    dbc.Col([
-                        dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
-                    ], width=6),
-                    dbc.Col([
-                        dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
-                    ], width=6),
-                ]),
+                # dbc.Row([
+                #     dbc.Col([
+                #         dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
+                #     ])
+                # ]),
+                # dbc.Row([
+                #     dbc.Col([
+                #         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
+                #     ], width=6),
+                #     dbc.Col([
+                #         dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
+                #     ], width=6),
+                # ]),
             ])
             
         ]
