@@ -16,7 +16,7 @@ import os
 from dash import Dash, html, dcc, callback, Output, Input
 
 user = os.getenv('JUPYTERHUB_USER')
-jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}")
+jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
 
 app = Dash(
     __name__,
@@ -71,7 +71,7 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     # remove jupyterhub_base_url from pathname
-    pathname = pathname.replace(jupyterhub_base_url, '')
+    pathname = pathname.replace(jupyterhub_base_url, '/')
 
     if pathname == "/":
         return html.P("This is the content of the home page!")
