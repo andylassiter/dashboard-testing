@@ -110,16 +110,22 @@ def render_home():
         html.P(f"Experiments: {len(project.experiments)}", className="lead"),
     ])
 
-def render_iris():
-    df = px.data.iris()
-    fig = px.scatter(df, x="sepal_width", y="sepal_length")
+# def render_iris():
+#     df = px.data.iris()
+#     fig = px.scatter(df, x="sepal_width", y="sepal_length")
     
+#     return dbc.Container([
+#         dbc.Col([
+#             dcc.Graph(figure=fig, id='my-first-graph-final')
+#         ], width=6),
+#     ], fluid=True)
+
+def render_iris():
     return dbc.Container([
         dbc.Col([
-            dcc.Graph(figure=fig, id='my-first-graph-final')
+            dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
         ], width=6),
     ], fluid=True)
-
 
 # def render_subjects():
 #     return html.Div([
@@ -127,46 +133,46 @@ def render_iris():
 #         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution()),
 #     ])
 
-# # Cache for subject data
-# subject_data_cache = None
+# Cache for subject data
+subject_data_cache = None
 
-# # Compile subject data or return cached data
-# def get_subject_data():
-#     global subject_data_cache
+# Compile subject data or return cached data
+def get_subject_data():
+    global subject_data_cache
     
-#     if subject_data_cache is not None:
-#         return subject_data_cache
+    if subject_data_cache is not None:
+        return subject_data_cache
     
-#     subject_data = {
-#         'id': [],
-#         'gender': [],
-#         'age': []
-#     }
+    subject_data = {
+        'id': [],
+        'gender': [],
+        'age': []
+    }
 
-#     for subject in project.subjects.values():
-#         subject_data['id'].append(subject.label)
-#         subject_data['gender'].append(subject.demographics.gender)
-#         subject_data['age'].append(subject.demographics.age)
+    for subject in project.subjects.values():
+        subject_data['id'].append(subject.label)
+        subject_data['gender'].append(subject.demographics.gender)
+        subject_data['age'].append(subject.demographics.age)
         
-#     df = pd.DataFrame(subject_data)
+    df = pd.DataFrame(subject_data)
     
-#     subject_data_cache = df
+    subject_data_cache = df
 
-#     return df
+    return df
 
-# def subject_age_distribution():
-#     ages = get_subject_data()['age']
+def subject_age_distribution():
+    ages = get_subject_data()['age']
 
-#     fig = px.histogram(ages, nbins=20)
-#     fig.update_layout(
-#         title_text='Age Distribution',
-#         xaxis_title_text='Age',
-#         yaxis_title_text='Count',
-#         bargap=0.2,
-#         bargroupgap=0.1
-#     )
+    fig = px.histogram(ages, nbins=20)
+    fig.update_layout(
+        title_text='Age Distribution',
+        xaxis_title_text='Age',
+        yaxis_title_text='Count',
+        bargap=0.2,
+        bargroupgap=0.1
+    )
 
-#     return fig
+    return fig
 
 if __name__ == "__main__":
     app.run_server(port=8050, host='0.0.0.0', debug=True)
