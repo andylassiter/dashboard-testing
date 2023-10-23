@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, Output, Input
+from dash import Dash, html, dcc, Output, Input, dash_table
 import dash_bootstrap_components as dbc
 import os
 import xnat
@@ -8,14 +8,16 @@ import plotly.express as px
 # Logging to stdout
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # Dash setup
 user = os.getenv('JUPYTERHUB_USER')
+# user = "admin"
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
+# jupyterhub_base_url = "/"
 
-logging.debug(f"JupyterHub base URL: {jupyterhub_base_url}")
-logging.debug(f"Starting Dash app")
+logging.info(f"JupyterHub base URL: {jupyterhub_base_url}")
+logging.info(f"Starting Dash app")
 
 app = Dash(
     __name__,
@@ -23,14 +25,14 @@ app = Dash(
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 
-logging.debug(f"Dash app created")
+logging.info(f"Dash app created")
 
 # XNAT setup
-xnat_host = os.getenv('XNAT_HOST')
-xnat_user = os.getenv('XNAT_USER')
-xnat_password = os.getenv('XNAT_PASS')
+xnat_host = os.getenv('XNAT_HOST', 'http://localhost')
+xnat_user = os.getenv('XNAT_USER', 'admin')
+xnat_password = os.getenv('XNAT_PASS', 'admin')
 
-project_id = os.getenv('XNAT_ITEM_ID')
+project_id = os.getenv('XNAT_ITEM_ID', "C4KC-KiTS")
 
 logging.debug(f"XNAT host: {xnat_host}")
 logging.debug(f"XNAT user: {xnat_user}")
@@ -90,7 +92,7 @@ def render_page_content(pathname):
     if pathname == "/":
         return render_home()
     elif pathname == "/subject-overview":
-        return render_iris()
+        return render_subjects()
     elif pathname == "/page-2":
         return html.P("Oh cool, this is page 2!")
     # If the user tries to reach a different page, return a 404 message
@@ -106,13 +108,27 @@ def render_page_content(pathname):
 def render_home():
     return html.Div(
         [
-            dbc.Row(
-                [
+            dbc.Col([
+                dbc.Row([
                     html.P(f"Project: {project_id}", className="lead"),
                     html.P(f"Subjects: {len(project.subjects)}", className="lead"),
                     html.P(f"Experiments: {len(project.experiments)}", className="lead"),
-                ]
-            ),
+                ]),
+                dbc.Row([
+                    dbc.Col([
+                        dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
+                    ])
+                ]),
+                dbc.Row([
+                    dbc.Col([
+                        dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
+                    ], width=6),
+                    dbc.Col([
+                        dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
+                    ], width=6),
+                ]),
+            ])
+            
         ]
     ) 
 
@@ -133,11 +149,11 @@ def render_iris():
 #         ], width=6),
 #     ], fluid=True)
 
-# def render_subjects():
-#     return html.Div([
-#         html.P("Subject Overview", className="lead"),
-#         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution()),
-#     ])
+def render_subjects():
+    return html.Div([
+        html.P("Subject Overview", className="lead"),
+        dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution()),
+    ])
 
 # Cache for subject data
 subject_data_cache = None
@@ -176,6 +192,19 @@ def subject_age_distribution():
         yaxis_title_text='Count',
         bargap=0.2,
         bargroupgap=0.1
+    )
+
+    return fig
+
+import plotly.express as px
+
+def subject_gender_distribution():
+    genders = get_subject_data()['gender'].value_counts()
+
+    fig = px.pie(genders, values=genders.values, names=genders.index)
+    fig.update_layout(
+        title_text='Gender Distribution',
+        showlegend=True
     )
 
     return fig
