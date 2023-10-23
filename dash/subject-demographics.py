@@ -40,7 +40,7 @@ CONTENT_STYLE = {
 
 sidebar = html.Div(
     [
-        html.H2("XNAT Dash App", className="display-4"),
+        html.H2("XNAT Dash App", className="display-7"),
         html.Hr(),
         html.P(f"Project: {project_id}", className="lead"),
         dbc.Nav(
@@ -85,8 +85,8 @@ def render_page_content(pathname):
 def render_home():
     return html.Div([
         html.P(f"Project: {project_id}", className="lead"),
-        html.P(f"Subjects: {project.subjects.count()}", className="lead"),
-        html.P(f"Experiments: {project.experiments.count()}", className="lead"),
+        html.P(f"Subjects: {len(project.subjects)}", className="lead"),
+        html.P(f"Experiments: {len(project.experiments)}", className="lead"),
     ])
 
 if __name__ == "__main__":
