@@ -6,10 +6,11 @@ import os
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv')
 
 user = os.getenv('JUPYTERHUB_USER')
+jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
 
 app = Dash(
     __name__,
-    requests_pathname_prefix=f"/jupyterhub/user/{user}/"
+    requests_pathname_prefix=jupyterhub_base_url,
 )
 
 app.layout = html.Div([
