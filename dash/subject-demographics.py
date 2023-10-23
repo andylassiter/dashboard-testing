@@ -75,7 +75,7 @@ def render_page_content(pathname):
     if pathname == "/":
         return render_home()
     elif pathname == "/subject-overview":
-        return html.P("This is the content of page 1. Yay!")
+        return render_iris()
     elif pathname == "/page-2":
         return html.P("Oh cool, this is page 2!")
     # If the user tries to reach a different page, return a 404 message
@@ -94,6 +94,16 @@ def render_home():
         html.P(f"Subjects: {len(project.subjects)}", className="lead"),
         html.P(f"Experiments: {len(project.experiments)}", className="lead"),
     ])
+
+def render_iris():
+    df = px.data.iris()
+    fig = px.scatter(df, x="sepal_width", y="sepal_length")
+    
+    return html.Div([
+        html.P("Iris Data", className="lead"),
+        dcc.Graph(id='iris-graph', figure=fig),
+    ])
+
 
 def render_subjects():
     return html.Div([
