@@ -1,9 +1,9 @@
+from dash import Dash, html, dcc, Output, Input
 import dash_bootstrap_components as dbc
 import os
 import xnat
-# import plotly.express as px
-# import pandas as pd
-from dash import Dash, html, dcc, Output, Input
+import pandas as pd
+import plotly.express as px
 
 # Dash setup
 user = os.getenv('JUPYTERHUB_USER')
