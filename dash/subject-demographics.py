@@ -21,7 +21,7 @@ logging.info(f"Starting Dash app")
 
 app = Dash(
     __name__,
-    requests_pathname_prefix=f"{jupyterhub_base_url}/",
+    requests_pathname_prefix=f"{jupyterhub_base_url}",
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 
