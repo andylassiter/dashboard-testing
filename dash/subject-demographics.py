@@ -1,8 +1,8 @@
 import dash_bootstrap_components as dbc
 import os
 import xnat
-import plotly.express as px
-import pandas as pd
+# import plotly.express as px
+# import pandas as pd
 from dash import Dash, html, dcc, Output, Input
 
 # Dash setup
@@ -91,52 +91,52 @@ def render_home():
         html.P(f"Experiments: {len(project.experiments)}", className="lead"),
     ])
 
-def render_subjects():
-    return html.Div([
-        html.P("Subject Overview", className="lead"),
-        dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution()),
-    ])
+# def render_subjects():
+#     return html.Div([
+#         html.P("Subject Overview", className="lead"),
+#         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution()),
+#     ])
 
-# Cache for subject data
-subject_data_cache = None
+# # Cache for subject data
+# subject_data_cache = None
 
-# Compile subject data or return cached data
-def get_subject_data():
-    global subject_data_cache
+# # Compile subject data or return cached data
+# def get_subject_data():
+#     global subject_data_cache
     
-    if subject_data_cache is not None:
-        return subject_data_cache
+#     if subject_data_cache is not None:
+#         return subject_data_cache
     
-    subject_data = {
-        'id': [],
-        'gender': [],
-        'age': []
-    }
+#     subject_data = {
+#         'id': [],
+#         'gender': [],
+#         'age': []
+#     }
 
-    for subject in project.subjects.values():
-        subject_data['id'].append(subject.label)
-        subject_data['gender'].append(subject.demographics.gender)
-        subject_data['age'].append(subject.demographics.age)
+#     for subject in project.subjects.values():
+#         subject_data['id'].append(subject.label)
+#         subject_data['gender'].append(subject.demographics.gender)
+#         subject_data['age'].append(subject.demographics.age)
         
-    df = pd.DataFrame(subject_data)
+#     df = pd.DataFrame(subject_data)
     
-    subject_data_cache = df
+#     subject_data_cache = df
 
-    return df
+#     return df
 
-def subject_age_distribution():
-    ages = get_subject_data()['age']
+# def subject_age_distribution():
+#     ages = get_subject_data()['age']
 
-    fig = px.histogram(ages, nbins=20)
-    fig.update_layout(
-        title_text='Age Distribution',
-        xaxis_title_text='Age',
-        yaxis_title_text='Count',
-        bargap=0.2,
-        bargroupgap=0.1
-    )
+#     fig = px.histogram(ages, nbins=20)
+#     fig.update_layout(
+#         title_text='Age Distribution',
+#         xaxis_title_text='Age',
+#         yaxis_title_text='Count',
+#         bargap=0.2,
+#         bargroupgap=0.1
+#     )
 
-    return fig
+#     return fig
 
 
 if __name__ == "__main__":
