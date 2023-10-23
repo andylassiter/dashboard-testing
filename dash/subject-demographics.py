@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 import os
 import xnat
 # import plotly.express as px
-# import pandas as pd
+import pandas as pd
 from dash import Dash, html, dcc, Output, Input
 
 # Dash setup
