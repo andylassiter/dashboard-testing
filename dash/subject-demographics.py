@@ -104,28 +104,39 @@ def render_page_content(pathname):
     )
 
 def render_home():
-    return html.Div([
-        html.P(f"Project: {project_id}", className="lead"),
-        html.P(f"Subjects: {len(project.subjects)}", className="lead"),
-        html.P(f"Experiments: {len(project.experiments)}", className="lead"),
-    ])
-
-# def render_iris():
-#     df = px.data.iris()
-#     fig = px.scatter(df, x="sepal_width", y="sepal_length")
-    
-#     return dbc.Container([
-#         dbc.Col([
-#             dcc.Graph(figure=fig, id='my-first-graph-final')
-#         ], width=6),
-#     ], fluid=True)
-
-def render_iris():
     return dbc.Container([
         dbc.Col([
-            dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
+            dbc.Row([
+                html.Div([
+                    html.P(f"Project: {project_id}", className="lead"),
+                    html.P(f"Subjects: {len(project.subjects)}", className="lead"),
+                    html.P(f"Experiments: {len(project.experiments)}", className="lead"),
+                ])
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    dcc.Graph(id='subject-age-distribution', figure={})
+                ], width=6),
+            ]),
+        ])
+    ], fluid=True) 
+
+def render_iris():
+    df = px.data.iris()
+    fig = px.scatter(df, x="sepal_width", y="sepal_length")
+    
+    return dbc.Container([
+        dbc.Col([
+            dcc.Graph(figure=fig, id='my-first-graph-final')
         ], width=6),
     ], fluid=True)
+
+# def render_iris():
+#     return dbc.Container([
+#         dbc.Col([
+#             dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
+#         ], width=6),
+#     ], fluid=True)
 
 # def render_subjects():
 #     return html.Div([
