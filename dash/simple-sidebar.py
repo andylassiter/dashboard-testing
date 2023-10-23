@@ -16,11 +16,11 @@ import os
 from dash import Dash, html, dcc, callback, Output, Input
 
 user = os.getenv('JUPYTERHUB_USER')
-jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
+jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}")
 
 app = Dash(
     __name__,
-    requests_pathname_prefix=jupyterhub_base_url,
+    requests_pathname_prefix=f"{jupyterhub_base_url}/",
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 
