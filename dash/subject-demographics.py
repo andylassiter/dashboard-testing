@@ -112,12 +112,7 @@ def render_home():
                     html.P(f"Subjects: {len(project.subjects)}", className="lead"),
                     html.P(f"Experiments: {len(project.experiments)}", className="lead"),
                 ])
-            ]),
-            dbc.Row([
-                dbc.Col([
-                    dcc.Graph(id='subject-age-distribution', figure={})
-                ], width=6),
-            ]),
+            ])
         ])
     ], fluid=True) 
 
