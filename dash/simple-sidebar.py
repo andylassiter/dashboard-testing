@@ -53,8 +53,8 @@ sidebar = html.Div(
         dbc.Nav(
             [
                 dbc.NavLink("Home", href=jupyterhub_base_url, active="exact"),
-                dbc.NavLink("Page 1", href=f"{jupyterhub_base_url}/page-1", active="exact"),
-                dbc.NavLink("Page 2", href=f"{jupyterhub_base_url}/page-2", active="exact"),
+                dbc.NavLink("Page 1", href=f"{jupyterhub_base_url}page-1", active="exact"),
+                dbc.NavLink("Page 2", href=f"{jupyterhub_base_url}page-2", active="exact"),
             ],
             vertical=True,
             pills=True,
