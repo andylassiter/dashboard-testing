@@ -8,7 +8,7 @@ df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapmi
 user = os.getenv('JUPYTERHUB_USER')
 
 app = Dash(
-    'HelloWorldApp',
+    __name__,
     requests_pathname_prefix=f"/jupyterhub/user/{user}/"
 )
 
