@@ -73,9 +73,7 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-content = dbc.Container([
-    html.Div(id="page-content", style=CONTENT_STYLE)
-], fluid=True)
+content = html.Div(id="page-content", style=CONTENT_STYLE)
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
@@ -129,12 +127,8 @@ def get_subject_data():
     return df
 
 def render_home():
-    return html.Div([
-        dbc.Row([
-            dbc.Col([
-                dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
-            ])
-        ])
+    return dbc.Container([
+        dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=15)
     ])
 
 
