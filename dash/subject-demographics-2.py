@@ -10,12 +10,10 @@ this feature you must install dash-bootstrap-components >= 0.11.0.
 For more details on building multi-page Dash applications, check out the Dash
 documentation: https://dash.plot.ly/urls
 """
+import dash
 import dash_bootstrap_components as dbc
 import os
-import xnat
-import pandas as pd
-import plotly.express as px
-from dash import Dash, html, dcc, callback, Output, Input, dash_table
+from dash import Dash, html, dcc, callback, Output, Input
 
 user = os.getenv('JUPYTERHUB_USER')
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
@@ -25,16 +23,6 @@ app = Dash(
     requests_pathname_prefix=f"{jupyterhub_base_url}/",
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
-
-# XNAT setup
-xnat_host = os.getenv('XNAT_HOST')
-xnat_user = os.getenv('XNAT_USER')
-xnat_password = os.getenv('XNAT_PASS')
-
-project_id = os.getenv('XNAT_ITEM_ID')
-
-connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password)
-project = connection.projects[project_id]
 
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
@@ -57,11 +45,11 @@ CONTENT_STYLE = {
 
 sidebar = html.Div(
     [
-        html.H3("XNAT Dash App", className="display-7"),
+        html.H2("Sidebar", className="display-4"),
         html.Hr(),
-        html.P(f"Project: {project_id}"),
-        html.P(f"Subjects: {len(project.subjects)}"),
-        html.P(f"Experiments: {len(project.experiments)}"),
+        html.P(
+            "A simple sidebar layout with navigation links", className="lead"
+        ),
         dbc.Nav(
             [
                 dbc.NavLink("Home", href=jupyterhub_base_url, active="exact"),
@@ -88,7 +76,7 @@ def render_page_content(pathname):
     if pathname == "/":
         return html.P("This is the content of the home page!")
     elif pathname == "/page-1":
-        return html.P("This is the content of page 1!")
+        return html.P("This is the content of page 1. Yay!")
     elif pathname == "/page-2":
         return html.P("Oh cool, this is page 2!")
     # If the user tries to reach a different page, return a 404 message
