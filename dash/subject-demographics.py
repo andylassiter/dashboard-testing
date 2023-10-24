@@ -14,6 +14,14 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'
 )
 
+# For local testing
+os.environ['JUPYTERHUB_USER'] = 'admin'
+os.environ['JUPYTERHUB_SERVICE_PREFIX'] = '/'
+os.environ['XNAT_HOST'] = 'http://localhost'
+os.environ['XNAT_USER'] = 'admin'
+os.environ['XNAT_PASS'] = 'admin'
+os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
+
 # Dash setup
 user = os.getenv('JUPYTERHUB_USER')
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
@@ -22,7 +30,7 @@ logging.info(f"JupyterHub base URL: {jupyterhub_base_url}")
 logging.info(f"Creating Dash app")
 
 app = Dash(
-    "subject-demographics",
+    __name__,
     requests_pathname_prefix=f"{jupyterhub_base_url}",
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
@@ -92,144 +100,145 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
 logging.info(f"Sidebar created")
 
-@app.callback(Output("page-content", "children"), [Input("url", "pathname")])
-def render_page_content(pathname):
-    logging.info(f"Rendering page content for pathname: {pathname}")
+# @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
+# def render_page_content(pathname):
+#     logging.info(f"Rendering page content for pathname: {pathname}")
 
-    # remove jupyterhub_base_url from pathname
-    pathname = pathname.replace(jupyterhub_base_url, '/')
+#     # remove jupyterhub_base_url from pathname
+#     pathname = pathname.replace(jupyterhub_base_url, '/')
 
-    if pathname == "/":
-        return html.P("This is the content of page 1. Yay!")
-        # return render_home()
-    elif pathname == "/page-1":
-        return html.P("This is the content of page 1. Yay!")
-    elif pathname == "/page-2":
-        return html.P("Oh cool, this is page 2!")
-    # If the user tries to reach a different page, return a 404 message
-    return html.Div(
-        [
-            html.H1("404: Not found", className="text-danger"),
-            html.Hr(),
-            html.P(f"The pathname {pathname} was not recognised..."),
-        ],
-        className="p-3 bg-light rounded-3",
-    )
+#     if pathname == "/":
+#         return html.P("This is the content of page 1. Yay!")
+#         # return render_home()
+#     elif pathname == "/page-1":
+#         return html.P("This is the content of page 1. Yay!")
+#     elif pathname == "/page-2":
+#         return html.P("Oh cool, this is page 2!")
+#     # If the user tries to reach a different page, return a 404 message
+#     return html.Div(
+#         [
+#             html.H1("404: Not found", className="text-danger"),
+#             html.Hr(),
+#             html.P(f"The pathname {pathname} was not recognised..."),
+#         ],
+#         className="p-3 bg-light rounded-3",
+#     )
 
-logging.info(f"Page content callback function created")
+# logging.info(f"Page content callback function created")
 
-def render_home():
-    logging.info(f"Rendering home page")
-    return html.Div(
-        [
-            dbc.Col([
-                dbc.Row([
-                    dbc.Col([
-                        dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
-                    ])
-                ]),
-                dbc.Row([
-                    dbc.Col([
-                        dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
-                    ], width=6),
-                    dbc.Col([
-                        dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
-                    ], width=6),
-                ]),
-            ])
-        ]
-    ) 
+# def render_home():
+#     logging.info(f"Rendering home page")
+#     return html.Div(
+#         [
+#             dbc.Col([
+#                 dbc.Row([
+#                     dbc.Col([
+#                         dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
+#                     ])
+#                 ]),
+#                 dbc.Row([
+#                     dbc.Col([
+#                         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
+#                     ], width=6),
+#                     dbc.Col([
+#                         dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
+#                     ], width=6),
+#                 ]),
+#             ])
+#         ]
+#     ) 
 
-logging.info(f"Render home function created")
+# logging.info(f"Render home function created")
 
-def render_iris():
-    logging.info(f"Rendering iris page")
-    df = px.data.iris()
-    fig = px.scatter(df, x="sepal_width", y="sepal_length")
+# def render_iris():
+#     logging.info(f"Rendering iris page")
+#     df = px.data.iris()
+#     fig = px.scatter(df, x="sepal_width", y="sepal_length")
     
-    return dbc.Container([
-        dbc.Col([
-            dcc.Graph(figure=fig, id='my-first-graph-final')
-        ], width=6),
-    ], fluid=True)
+#     return dbc.Container([
+#         dbc.Col([
+#             dcc.Graph(figure=fig, id='my-first-graph-final')
+#         ], width=6),
+#     ], fluid=True)
 
-logging.info(f"Render iris function created")
+# logging.info(f"Render iris function created")
 
-def render_subjects():
-    logging.info(f"Rendering subjects graph")
-    return html.Div([
-        html.P("Subject Overview", className="lead"),
-        dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution()),
-    ])
+# def render_subjects():
+#     logging.info(f"Rendering subjects graph")
+#     return html.Div([
+#         html.P("Subject Overview", className="lead"),
+#         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution()),
+#     ])
 
-logging.info(f"Render subjects function created")
+# logging.info(f"Render subjects function created")
 
-# Cache for subject data
-subject_data_cache = None
+# # Cache for subject data
+# subject_data_cache = None
 
-logging.info(f"Subject data cache created")
+# logging.info(f"Subject data cache created")
 
-# Compile subject data or return cached data
-def get_subject_data():
-    logging.info(f"Getting subject data")
+# # Compile subject data or return cached data
+# def get_subject_data():
+#     logging.info(f"Getting subject data")
 
-    global subject_data_cache
+#     global subject_data_cache
     
-    if subject_data_cache is not None:
-        return subject_data_cache
+#     if subject_data_cache is not None:
+#         return subject_data_cache
     
-    subject_data = {
-        'id': [],
-        'gender': [],
-        'age': []
-    }
+#     subject_data = {
+#         'id': [],
+#         'gender': [],
+#         'age': []
+#     }
 
-    for subject in project.subjects.values():
-        subject_data['id'].append(subject.label)
-        subject_data['gender'].append(subject.demographics.gender)
-        subject_data['age'].append(subject.demographics.age)
+#     for subject in project.subjects.values():
+#         subject_data['id'].append(subject.label)
+#         subject_data['gender'].append(subject.demographics.gender)
+#         subject_data['age'].append(subject.demographics.age)
         
-    df = pd.DataFrame(subject_data)
+#     df = pd.DataFrame(subject_data)
     
-    subject_data_cache = df
+#     subject_data_cache = df
 
-    return df
+#     return df
 
-logging.info(f"Get subject data function created")
+# logging.info(f"Get subject data function created")
 
-def subject_age_distribution():
-    logging.info(f"Rendering subject age distribution")
+# def subject_age_distribution():
+#     logging.info(f"Rendering subject age distribution")
 
-    ages = get_subject_data()['age']
+#     ages = get_subject_data()['age']
 
-    fig = px.histogram(ages, nbins=20)
-    fig.update_layout(
-        title_text='Age Distribution',
-        xaxis_title_text='Age',
-        yaxis_title_text='Count',
-        bargap=0.2,
-        bargroupgap=0.1
-    )
+#     fig = px.histogram(ages, nbins=20)
+#     fig.update_layout(
+#         title_text='Age Distribution',
+#         xaxis_title_text='Age',
+#         yaxis_title_text='Count',
+#         bargap=0.2,
+#         bargroupgap=0.1
+#     )
 
-    return fig
+#     return fig
 
-logging.info(f"Subject age distribution function created")
+# logging.info(f"Subject age distribution function created")
 
-def subject_gender_distribution():
-    logging.info("Rendering subject gender pie chart")
+# def subject_gender_distribution():
+#     logging.info("Rendering subject gender pie chart")
 
-    genders = get_subject_data()['gender'].value_counts()
+#     genders = get_subject_data()['gender'].value_counts()
 
-    fig = px.pie(genders, values=genders.values, names=genders.index)
-    fig.update_layout(
-        title_text='Gender Distribution',
-        showlegend=True
-    )
+#     fig = px.pie(genders, values=genders.values, names=genders.index)
+#     fig.update_layout(
+#         title_text='Gender Distribution',
+#         showlegend=True
+#     )
 
-    return fig
+#     return fig
 
-logging.info("Subject gender distribution function created")
+# logging.info("Subject gender distribution function created")
 
 logging.info(f"Starting Dash app {__name__}")
 
-app.run_server(port=8050, host='0.0.0.0', debug=True)
+if __name__ == "__main__":
+    app.run_server(port=8050, host='0.0.0.0', debug=True)
