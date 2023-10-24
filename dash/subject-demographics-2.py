@@ -15,6 +15,7 @@ import dash_bootstrap_components as dbc
 import os
 import xnat
 import pandas as pd
+import plotly.express as px
 from dash import Dash, html, dcc, callback, Output, Input, dash_table
 
 user = os.getenv('JUPYTERHUB_USER')
