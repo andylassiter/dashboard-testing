@@ -50,7 +50,7 @@ csv_file = ("https://raw.githubusercontent.com/holoviz/panel/main/examples/asset
 data = pd.read_csv(csv_file, parse_dates=["date"], index_col="date")
 
 df = get_subject_data()
-df_pane = pn.pane.DataFrame(df)
+df_pane = pn.pane.DataFrame(df, max_rows=15)
 
 first_app = pn.Column(df_pane)
 
