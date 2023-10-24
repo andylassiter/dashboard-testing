@@ -14,13 +14,13 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'
 )
 
-# For local testing
-os.environ['JUPYTERHUB_USER'] = 'admin'
-os.environ['JUPYTERHUB_SERVICE_PREFIX'] = '/'
-os.environ['XNAT_HOST'] = 'http://localhost'
-os.environ['XNAT_USER'] = 'admin'
-os.environ['XNAT_PASS'] = 'admin'
-os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
+# # For local testing
+# os.environ['JUPYTERHUB_USER'] = 'admin'
+# os.environ['JUPYTERHUB_SERVICE_PREFIX'] = '/'
+# os.environ['XNAT_HOST'] = 'http://localhost'
+# os.environ['XNAT_USER'] = 'admin'
+# os.environ['XNAT_PASS'] = 'admin'
+# os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
 
 # Dash setup
 user = os.getenv('JUPYTERHUB_USER')
