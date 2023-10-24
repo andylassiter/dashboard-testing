@@ -14,7 +14,8 @@ import dash
 import dash_bootstrap_components as dbc
 import os
 import xnat
-from dash import Dash, html, dcc, callback, Output, Input
+import pandas as pd
+from dash import Dash, html, dcc, callback, Output, Input, dash_table
 
 user = os.getenv('JUPYTERHUB_USER')
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
@@ -85,7 +86,7 @@ def render_page_content(pathname):
     pathname = pathname.replace(jupyterhub_base_url, '/')
 
     if pathname == "/":
-        return html.P("This is the content of the home page!")
+        return render_home()
     elif pathname == "/page-1":
         return html.P("This is the content of page 1. Yay!")
     elif pathname == "/page-2":
@@ -100,6 +101,44 @@ def render_page_content(pathname):
         className="p-3 bg-light rounded-3",
     )
 
+def render_home():
+    return html.Div([
+        dbc.Col([
+            dbc.Row([
+                dbc.Col([
+                        dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
+                ])
+            ])
+        ])
+    ]) 
+
+# Cache for subject data
+subject_data_cache = None
+
+# Compile subject data or return cached data
+def get_subject_data():
+    
+    global subject_data_cache
+    
+    if subject_data_cache is not None:
+        return subject_data_cache
+    
+    subject_data = {
+        'id': [],
+        'gender': [],
+        'age': []
+    }
+    
+    for subject in project.subjects.values():
+        subject_data['id'].append(subject.label)
+        subject_data['gender'].append(subject.demographics.gender)
+        subject_data['age'].append(subject.demographics.age)
+    
+    df = pd.DataFrame(subject_data)
+    
+    subject_data_cache = df
+    
+    return df
 
 if __name__ == "__main__":
     app.run_server(port=8050, host='0.0.0.0')
