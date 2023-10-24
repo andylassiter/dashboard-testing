@@ -100,29 +100,29 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
 logging.info(f"Sidebar created")
 
-# @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
-# def render_page_content(pathname):
-#     logging.info(f"Rendering page content for pathname: {pathname}")
+@app.callback(Output("page-content", "children"), [Input("url", "pathname")])
+def render_page_content(pathname):
+    logging.info(f"Rendering page content for pathname: {pathname}")
 
-#     # remove jupyterhub_base_url from pathname
-#     pathname = pathname.replace(jupyterhub_base_url, '/')
+    # remove jupyterhub_base_url from pathname
+    pathname = pathname.replace(jupyterhub_base_url, '/')
 
-#     if pathname == "/":
-#         return html.P("This is the content of page 1. Yay!")
-#         # return render_home()
-#     elif pathname == "/page-1":
-#         return html.P("This is the content of page 1. Yay!")
-#     elif pathname == "/page-2":
-#         return html.P("Oh cool, this is page 2!")
-#     # If the user tries to reach a different page, return a 404 message
-#     return html.Div(
-#         [
-#             html.H1("404: Not found", className="text-danger"),
-#             html.Hr(),
-#             html.P(f"The pathname {pathname} was not recognised..."),
-#         ],
-#         className="p-3 bg-light rounded-3",
-#     )
+    if pathname == "/":
+        return html.P("This is the content of page 1. Yay!")
+        # return render_home()
+    elif pathname == "/page-1":
+        return html.P("This is the content of page 1. Yay!")
+    elif pathname == "/page-2":
+        return html.P("Oh cool, this is page 2!")
+    # If the user tries to reach a different page, return a 404 message
+    return html.Div(
+        [
+            html.H1("404: Not found", className="text-danger"),
+            html.Hr(),
+            html.P(f"The pathname {pathname} was not recognised..."),
+        ],
+        className="p-3 bg-light rounded-3",
+    )
 
 # logging.info(f"Page content callback function created")
 
@@ -238,7 +238,6 @@ logging.info(f"Sidebar created")
 
 # logging.info("Subject gender distribution function created")
 
-logging.info(f"Starting Dash app {__name__}")
-
 if __name__ == "__main__":
+    logging.info(f"Starting Dash app {__name__}")
     app.run_server(port=8050, host='0.0.0.0', debug=True)
