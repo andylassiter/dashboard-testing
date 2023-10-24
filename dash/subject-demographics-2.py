@@ -72,7 +72,9 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-content = html.Div(id="page-content", style=CONTENT_STYLE)
+content = dbc.Container([
+    html.Div(id="page-content", style=CONTENT_STYLE)
+], fluid=True)
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
