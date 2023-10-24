@@ -10,7 +10,6 @@ this feature you must install dash-bootstrap-components >= 0.11.0.
 For more details on building multi-page Dash applications, check out the Dash
 documentation: https://dash.plot.ly/urls
 """
-import dash
 import dash_bootstrap_components as dbc
 import os
 import xnat
@@ -89,7 +88,7 @@ def render_page_content(pathname):
     if pathname == "/":
         return render_home()
     elif pathname == "/page-1":
-        return render_page1()
+        return html.P("This is the content of page 1!")
     elif pathname == "/page-2":
         return html.P("Oh cool, this is page 2!")
     # If the user tries to reach a different page, return a 404 message
@@ -111,14 +110,6 @@ def render_home():
         ])
     ]) 
 
-def render_page1():
-    return dbc.Container([
-        dbc.Row([
-            dbc.Col([
-                html.H1("Page 1")
-            ])
-        ])
-    ])
 
 # Cache for subject data
 subject_data_cache = None
@@ -148,31 +139,6 @@ def get_subject_data():
     
     return df
 
-def subject_age_distribution():
-    ages = get_subject_data()['age']
-    
-    fig = px.histogram(ages, nbins=20)
-    fig.update_layout(
-        title_text='Age Distribution',
-        xaxis_title_text='Age',
-        yaxis_title_text='Count',
-        bargap=0.2,
-        bargroupgap=0.1
-    )
-
-    return dcc.Graph(id='subject-age-distribution', figure=fig)
-
-
-def subject_gender_distribution():
-    genders = get_subject_data()['gender'].value_counts()
-    
-    fig = px.pie(genders, values=genders.values, names=genders.index)
-    fig.update_layout(
-        title_text='Gender Distribution',
-        showlegend=True
-    )
-    
-    return fig
 
 if __name__ == "__main__":
     app.run_server(port=8050, host='0.0.0.0')
