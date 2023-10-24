@@ -231,6 +231,4 @@ logging.info("Subject gender distribution function created")
 
 logging.info(f"Starting Dash app {__name__}")
 
-if __name__ == "__main__":
-    logging.info(f"Starting Dash app {__name__}")
-    app.run_server(port=8050, host='0.0.0.0', debug=True)
+app.run_server(port=8050, host='0.0.0.0', debug=True)
