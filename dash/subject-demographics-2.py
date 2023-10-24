@@ -107,6 +107,14 @@ def render_home():
             dbc.Col([
                     dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
             ])
+        ]),
+        dbc.Row([
+            dbc.Col([
+                dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
+            ]),
+            dbc.Col([
+                dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
+            ])
         ])
     ]) 
 
@@ -137,6 +145,31 @@ def get_subject_data():
     subject_data_cache = df
     
     return df
+
+def subject_age_distribution():
+    ages = get_subject_data()['age']
+    
+    fig = px.histogram(ages, nbins=20)
+    fig.update_layout(
+        title_text='Age Distribution',
+        xaxis_title_text='Age',
+        yaxis_title_text='Count',
+        bargap=0.2,
+        bargroupgap=0.1
+    )
+    
+    return fig
+
+def subject_gender_distribution():
+    genders = get_subject_data()['gender'].value_counts()
+    
+    fig = px.pie(genders, values=genders.values, names=genders.index)
+    fig.update_layout(
+        title_text='Gender Distribution',
+        showlegend=True
+    )
+    
+    return fig
 
 if __name__ == "__main__":
     app.run_server(port=8050, host='0.0.0.0')
