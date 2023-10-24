@@ -108,15 +108,12 @@ def render_home():
             dbc.Col([
                     dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
             ])
-        ]),
+        ]), 
         dbc.Row([
-            dbc.Col([
-                dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
-            ]),
-            dbc.Col([
-                dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
-            ])
-        ])
+            dbc.Col(html.Div("One of three columns")),
+            dbc.Col(html.Div("One of three columns")),
+            dbc.Col(html.Div("One of three columns")),
+        ]),
     ]) 
 
 # Cache for subject data
