@@ -44,6 +44,8 @@ logging.info(f"XNAT project ID: {project_id}")
 connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password)
 project = connection.projects[project_id]
 
+logging.info(f"Connected to XNAT")
+
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
     "position": "fixed",
@@ -62,6 +64,8 @@ CONTENT_STYLE = {
     "margin-right": "2rem",
     "padding": "2rem 1rem",
 }
+
+logging.info(f"Creating sidebar")
 
 sidebar = html.Div(
     [
@@ -82,9 +86,9 @@ sidebar = html.Div(
 )
 
 content = html.Div(id="page-content", style=CONTENT_STYLE)
-
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
+logging.info(f"Sidebar created")
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
@@ -110,6 +114,7 @@ def render_page_content(pathname):
     )
 
 def render_home():
+    logging.info(f"Rendering home page")
     return html.Div(
         [
             dbc.Col([
@@ -118,24 +123,25 @@ def render_home():
                     html.P(f"Subjects: {len(project.subjects)}", className="lead"),
                     html.P(f"Experiments: {len(project.experiments)}", className="lead"),
                 ]),
-                # dbc.Row([
-                #     dbc.Col([
-                #         dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
-                #     ])
-                # ]),
-                # dbc.Row([
-                #     dbc.Col([
-                #         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
-                #     ], width=6),
-                #     dbc.Col([
-                #         dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
-                #     ], width=6),
-                # ]),
+                dbc.Row([
+                    dbc.Col([
+                        dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
+                    ])
+                ]),
+                dbc.Row([
+                    dbc.Col([
+                        dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
+                    ], width=6),
+                    dbc.Col([
+                        dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
+                    ], width=6),
+                ]),
             ])
         ]
     ) 
 
 def render_iris():
+    logging.info(f"Rendering iris page")
     df = px.data.iris()
     fig = px.scatter(df, x="sepal_width", y="sepal_length")
     
@@ -153,6 +159,7 @@ def render_iris():
 #     ], fluid=True)
 
 def render_subjects():
+    logging.info(f"Rendering subjects graph")
     return html.Div([
         html.P("Subject Overview", className="lead"),
         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution()),
@@ -163,6 +170,8 @@ subject_data_cache = None
 
 # Compile subject data or return cached data
 def get_subject_data():
+    logging.info(f"Getting subject data")
+
     global subject_data_cache
     
     if subject_data_cache is not None:
@@ -186,6 +195,8 @@ def get_subject_data():
     return df
 
 def subject_age_distribution():
+    logging.info(f"Rendering subject age distribution")
+
     ages = get_subject_data()['age']
 
     fig = px.histogram(ages, nbins=20)
@@ -199,9 +210,9 @@ def subject_age_distribution():
 
     return fig
 
-import plotly.express as px
-
 def subject_gender_distribution():
+    logging.info("Rendering subject gender pie chart")
+
     genders = get_subject_data()['gender'].value_counts()
 
     fig = px.pie(genders, values=genders.values, names=genders.index)
@@ -213,4 +224,5 @@ def subject_gender_distribution():
     return fig
 
 if __name__ == "__main__":
+    logging.info(f"Starting Dash app")
     app.run_server(port=8050, host='0.0.0.0', debug=True)
