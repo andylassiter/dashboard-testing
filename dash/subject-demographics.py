@@ -10,7 +10,7 @@ import logging
 
 logging.basicConfig(
     filename='dash.log',
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'
 )
 
@@ -19,7 +19,7 @@ user = os.getenv('JUPYTERHUB_USER')
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
 
 logging.info(f"JupyterHub base URL: {jupyterhub_base_url}")
-logging.info(f"Starting Dash app")
+logging.info(f"Creating Dash app")
 
 app = Dash(
     __name__,
