@@ -102,7 +102,7 @@ def render_page_content(pathname):
     )
 
 def render_home():
-    return html.Div([
+    return dbc.Container([
         dbc.Col([
             dbc.Row([
                 dbc.Col([
