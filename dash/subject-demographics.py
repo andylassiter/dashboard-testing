@@ -22,7 +22,7 @@ logging.info(f"JupyterHub base URL: {jupyterhub_base_url}")
 logging.info(f"Creating Dash app")
 
 app = Dash(
-    __name__,
+    "subject-demographics",
     requests_pathname_prefix=f"{jupyterhub_base_url}",
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
