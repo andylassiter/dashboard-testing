@@ -106,15 +106,19 @@ def render_home():
     return dbc.Container([
         dbc.Row([
             dbc.Col([
-                    dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
+                    dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=15)
             ])
-        ]), 
-        dbc.Row([
-            dbc.Col(html.Div("One of three columns")),
-            dbc.Col(html.Div("One of three columns")),
-            dbc.Col(html.Div("One of three columns")),
-        ]),
+        ])
     ]) 
+
+def render_page1():
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col([
+                subject_age_distribution()
+            ])
+        ])
+    ])
 
 # Cache for subject data
 subject_data_cache = None
@@ -155,8 +159,8 @@ def subject_age_distribution():
         bargap=0.2,
         bargroupgap=0.1
     )
-    
-    return fig
+
+    return dcc.Graph(id='subject-age-distribution', figure=fig)
 
 def subject_gender_distribution():
     genders = get_subject_data()['gender'].value_counts()
