@@ -5,16 +5,18 @@ import xnat
 import pandas as pd
 import plotly.express as px
 
-# Logging to stdout
+# Logging to a file
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    filename='dash.log',
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'
+)
 
 # Dash setup
 user = os.getenv('JUPYTERHUB_USER')
-# user = "admin"
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
-# jupyterhub_base_url = "/"
 
 logging.info(f"JupyterHub base URL: {jupyterhub_base_url}")
 logging.info(f"Starting Dash app")
@@ -28,16 +30,16 @@ app = Dash(
 logging.info(f"Dash app created")
 
 # XNAT setup
-xnat_host = os.getenv('XNAT_HOST', 'http://localhost')
-xnat_user = os.getenv('XNAT_USER', 'admin')
-xnat_password = os.getenv('XNAT_PASS', 'admin')
+xnat_host = os.getenv('XNAT_HOST')
+xnat_user = os.getenv('XNAT_USER')
+xnat_password = os.getenv('XNAT_PASS')
 
-project_id = os.getenv('XNAT_ITEM_ID', "C4KC-KiTS")
+project_id = os.getenv('XNAT_ITEM_ID')
 
-logging.debug(f"XNAT host: {xnat_host}")
-logging.debug(f"XNAT user: {xnat_user}")
-logging.debug(f"XNAT password: {xnat_password}")
-logging.debug(f"XNAT project ID: {project_id}")
+logging.info(f"XNAT host: {xnat_host}")
+logging.info(f"XNAT user: {xnat_user}")
+logging.info(f"XNAT password: {xnat_password}")
+logging.info(f"XNAT project ID: {project_id}")
 
 connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password)
 project = connection.projects[project_id]
@@ -86,6 +88,8 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
+    logging.info(f"Rendering page content for pathname: {pathname}")
+
     # remove jupyterhub_base_url from pathname
     pathname = pathname.replace(jupyterhub_base_url, '/')
 
@@ -128,7 +132,6 @@ def render_home():
                 #     ], width=6),
                 # ]),
             ])
-            
         ]
     ) 
 
