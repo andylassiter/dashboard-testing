@@ -89,7 +89,7 @@ def render_page_content(pathname):
     if pathname == "/":
         return render_home()
     elif pathname == "/page-1":
-        return html.P("This is the content of page 1. Yay!")
+        return render_page1()
     elif pathname == "/page-2":
         return html.P("Oh cool, this is page 2!")
     # If the user tries to reach a different page, return a 404 message
@@ -159,7 +159,7 @@ def subject_age_distribution():
         bargap=0.2,
         bargroupgap=0.1
     )
-    
+
     return dcc.Graph(id='subject-age-distribution', figure=fig)
 
 
