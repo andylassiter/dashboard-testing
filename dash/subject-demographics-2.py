@@ -159,8 +159,9 @@ def subject_age_distribution():
         bargap=0.2,
         bargroupgap=0.1
     )
-
+    
     return dcc.Graph(id='subject-age-distribution', figure=fig)
+
 
 def subject_gender_distribution():
     genders = get_subject_data()['gender'].value_counts()
