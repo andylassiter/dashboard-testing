@@ -115,7 +115,7 @@ def render_page1():
     return dbc.Container([
         dbc.Row([
             dbc.Col([
-                subject_age_distribution()
+                html.H1("Page 1")
             ])
         ])
     ])
