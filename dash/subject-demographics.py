@@ -115,6 +115,8 @@ def render_page_content(pathname):
         className="p-3 bg-light rounded-3",
     )
 
+logging.info(f"Page content callback function created")
+
 def render_home():
     logging.info(f"Rendering home page")
     return html.Div(
@@ -137,6 +139,8 @@ def render_home():
         ]
     ) 
 
+logging.info(f"Render home function created")
+
 def render_iris():
     logging.info(f"Rendering iris page")
     df = px.data.iris()
@@ -148,12 +152,7 @@ def render_iris():
         ], width=6),
     ], fluid=True)
 
-# def render_iris():
-#     return dbc.Container([
-#         dbc.Col([
-#             dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
-#         ], width=6),
-#     ], fluid=True)
+logging.info(f"Render iris function created")
 
 def render_subjects():
     logging.info(f"Rendering subjects graph")
@@ -162,8 +161,12 @@ def render_subjects():
         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution()),
     ])
 
+logging.info(f"Render subjects function created")
+
 # Cache for subject data
 subject_data_cache = None
+
+logging.info(f"Subject data cache created")
 
 # Compile subject data or return cached data
 def get_subject_data():
@@ -191,6 +194,8 @@ def get_subject_data():
 
     return df
 
+logging.info(f"Get subject data function created")
+
 def subject_age_distribution():
     logging.info(f"Rendering subject age distribution")
 
@@ -207,6 +212,8 @@ def subject_age_distribution():
 
     return fig
 
+logging.info(f"Subject age distribution function created")
+
 def subject_gender_distribution():
     logging.info("Rendering subject gender pie chart")
 
@@ -220,6 +227,10 @@ def subject_gender_distribution():
 
     return fig
 
+logging.info("Subject gender distribution function created")
+
+logging.info(f"Starting Dash app {__name__}")
+
 if __name__ == "__main__":
-    logging.info(f"Starting Dash app")
+    logging.info(f"Starting Dash app {__name__}")
     app.run_server(port=8050, host='0.0.0.0', debug=True)
