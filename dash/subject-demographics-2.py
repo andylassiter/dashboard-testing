@@ -103,11 +103,9 @@ def render_page_content(pathname):
 
 def render_home():
     return dbc.Container([
-        dbc.Col([
-            dbc.Row([
-                dbc.Col([
-                        dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
-                ])
+        dbc.Row([
+            dbc.Col([
+                    dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
             ])
         ])
     ]) 
