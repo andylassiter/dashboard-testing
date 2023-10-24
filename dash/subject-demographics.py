@@ -100,7 +100,8 @@ def render_page_content(pathname):
     pathname = pathname.replace(jupyterhub_base_url, '/')
 
     if pathname == "/":
-        return render_home()
+        return html.P("This is the content of page 1. Yay!")
+        # return render_home()
     elif pathname == "/page-1":
         return html.P("This is the content of page 1. Yay!")
     elif pathname == "/page-2":
