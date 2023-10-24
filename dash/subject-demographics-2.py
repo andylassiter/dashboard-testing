@@ -10,9 +10,9 @@ this feature you must install dash-bootstrap-components >= 0.11.0.
 For more details on building multi-page Dash applications, check out the Dash
 documentation: https://dash.plot.ly/urls
 """
-import dash
 import dash_bootstrap_components as dbc
 import os
+import xnat
 from dash import Dash, html, dcc, callback, Output, Input
 
 user = os.getenv('JUPYTERHUB_USER')
@@ -43,13 +43,22 @@ CONTENT_STYLE = {
     "padding": "2rem 1rem",
 }
 
+# XNAT setup
+xnat_host = os.getenv('XNAT_HOST')
+xnat_user = os.getenv('XNAT_USER')
+xnat_password = os.getenv('XNAT_PASS')
+project_id = os.getenv('XNAT_ITEM_ID')
+
+connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password)
+project = connection.projects[project_id]
+
 sidebar = html.Div(
     [
-        html.H2("Sidebar", className="display-4"),
+        html.H2("XNAT Dash App", className="display-7"),
         html.Hr(),
-        html.P(
-            "A simple sidebar layout with navigation links", className="lead"
-        ),
+        html.P(f"Project: {project_id}"),
+        html.P(f"Subjects: {len(project.subjects)}"),
+        html.P(f"Experiments: {len(project.experiments)}"),
         dbc.Nav(
             [
                 dbc.NavLink("Home", href=jupyterhub_base_url, active="exact"),
