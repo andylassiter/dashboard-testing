@@ -71,11 +71,13 @@ sidebar = html.Div(
     [
         html.H3("XNAT Dash App", className="display-7"),
         html.Hr(),
-        html.P(f"Project: {project_id}", className="lead"),
+        html.P(f"Project: {project_id}"),
+        html.P(f"Subjects: {len(project.subjects)}"),
+        html.P(f"Experiments: {len(project.experiments)}"),
         dbc.Nav(
             [
                 dbc.NavLink("Project Overview", href=jupyterhub_base_url, active="exact"),
-                dbc.NavLink("Subject Overview", href=f"{jupyterhub_base_url}subject-overview", active="exact"),
+                dbc.NavLink("Subject Overview", href=f"{jupyterhub_base_url}page-1", active="exact"),
                 dbc.NavLink("Page 2", href=f"{jupyterhub_base_url}page-2", active="exact"),
             ],
             vertical=True,
@@ -99,8 +101,8 @@ def render_page_content(pathname):
 
     if pathname == "/":
         return render_home()
-    elif pathname == "/subject-overview":
-        return render_subjects()
+    elif pathname == "/page-1":
+        return html.P("This is the content of page 1. Yay!")
     elif pathname == "/page-2":
         return html.P("Oh cool, this is page 2!")
     # If the user tries to reach a different page, return a 404 message
@@ -118,11 +120,6 @@ def render_home():
     return html.Div(
         [
             dbc.Col([
-                dbc.Row([
-                    html.P(f"Project: {project_id}", className="lead"),
-                    html.P(f"Subjects: {len(project.subjects)}", className="lead"),
-                    html.P(f"Experiments: {len(project.experiments)}", className="lead"),
-                ]),
                 dbc.Row([
                     dbc.Col([
                         dash_table.DataTable(data=get_subject_data().to_dict('records'), page_size=10, style_table={'overflowX': 'auto'})
