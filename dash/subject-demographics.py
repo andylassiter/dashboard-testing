@@ -103,10 +103,10 @@ logging.info(f"Sidebar created")
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     logging.info(f"Rendering page content for pathname: {pathname}")
-
+    
     # remove jupyterhub_base_url from pathname
     pathname = pathname.replace(jupyterhub_base_url, '/')
-
+    
     if pathname == "/":
         return html.P("This is the content of page 1. Yay!")
         # return render_home()
