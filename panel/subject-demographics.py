@@ -68,9 +68,11 @@ template = pn.template.BootstrapTemplate(
 )
 
 template.main.append(
-    pn.Row(
-        pn.Column(df_pane),
-        pn.Column(histogram_age)
+    pn.Column(
+        pn.Row(
+            pn.Column(df_pane),
+            pn.Column(histogram_age)
+        )
     )
 )
 
