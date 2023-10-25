@@ -6,13 +6,13 @@ import numpy as np
 import xnat
 import os
 
-# # For local testing
-# os.environ['JUPYTERHUB_USER'] = 'admin'
-# os.environ['JUPYTERHUB_SERVICE_PREFIX'] = '/'
-# os.environ['XNAT_HOST'] = 'http://localhost'
-# os.environ['XNAT_USER'] = 'admin'
-# os.environ['XNAT_PASS'] = 'admin'
-# os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
+# For local testing
+os.environ['JUPYTERHUB_USER'] = 'admin'
+os.environ['JUPYTERHUB_SERVICE_PREFIX'] = '/'
+os.environ['XNAT_HOST'] = 'http://localhost'
+os.environ['XNAT_USER'] = 'admin'
+os.environ['XNAT_PASS'] = 'admin'
+os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
 
 # XNAT setup
 xnat_host = os.getenv('XNAT_HOST')
@@ -58,7 +58,7 @@ pn.extension(design='material')
 df = get_subject_data()
 df_pane = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=300)
 
-histogram_age = df.hvplot.hist('age', bins=15, title='Age Distribution', height=300)
+histogram_age = df.hvplot.hist('age', bins=15, height=300)
 histogram_age.opts(xlabel='Age', ylabel='Count')
 histogram_age.opts(width=500, height=300)
 
@@ -67,12 +67,30 @@ template = pn.template.BootstrapTemplate(
     busy_indicator=pn.indicators.BooleanStatus(value=False)
 )
 
+## Card for basic project information
+project_card = pn.Card(
+    pn.pane.Markdown(f"**Project ID:** {project_id}"),
+    pn.pane.Markdown(f"**Subject Count:** {len(project.subjects)}"),
+    pn.pane.Markdown(f"**Experiment Count:** {len(project.experiments)}"),
+    title='Project Information',
+    collapsible=False,
+    sizing_mode="stretch_width",
+)
+
 template.main.append(
     pn.Column(
+        project_card,
         pn.Row(
-            pn.Column(df_pane),
-            pn.Column(histogram_age)
-        )
+            pn.Column(
+                pn.pane.Markdown(f"**Subject Data**"),
+                df_pane
+            ),
+            pn.Spacer(),
+            pn.Column(
+                pn.pane.Markdown(f"**Subject Age Distribution**"),
+                histogram_age
+            )
+        ),
     )
 )
 
