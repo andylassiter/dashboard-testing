@@ -27,7 +27,24 @@ project = connection.projects[project_id]
 logging.info(f"Connected to XNAT project {project_id}")
 
 # Incorporate data
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
+# Compile subject data or return cached data
+def get_subject_data():
+    subject_data = {
+        'id': [],
+        'gender': [],
+        'age': []
+    }
+
+    for subject in project.subjects.values():
+        subject_data['id'].append(subject.label)
+        subject_data['gender'].append(subject.demographics.gender)
+        subject_data['age'].append(subject.demographics.age)
+        
+    df = pd.DataFrame(subject_data)
+
+    return df
+
+df = get_subject_data()
 
 # Dash setup
 user = os.getenv('JUPYTERHUB_USER')
@@ -68,14 +85,7 @@ app.layout = dbc.Container([
 
 ], fluid=True)
 
-# Add controls to build the interaction
-@callback(
-    Output(component_id='my-first-graph-final', component_property='figure'),
-    Input(component_id='radio-buttons-final', component_property='value')
-)
-def update_graph(col_chosen):
-    fig = px.histogram(df, x='continent', y=col_chosen, histfunc='avg')
-    return fig
+
 
 # Run the app
 if __name__ == "__main__":
