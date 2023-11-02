@@ -46,6 +46,8 @@ def get_subject_data():
 
 df = get_subject_data()
 
+logging.info(f"dataframe: {df}")
+
 # Dash setup
 user = os.getenv('JUPYTERHUB_USER')
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
@@ -54,7 +56,7 @@ logging.info(f"Creating Dash app named {__name__} with base URL {jupyterhub_base
 
 app = Dash(
     __name__,
-    requests_pathname_prefix=f"{jupyterhub_base_url}/",
+    requests_pathname_prefix=f"{jupyterhub_base_url}",
     external_stylesheets=[dbc.themes.CERULEAN]
 )
 
@@ -64,13 +66,6 @@ logging.info(f"Created Dash app named {__name__} with base URL {jupyterhub_base_
 app.layout = dbc.Container([
     dbc.Row([
         html.Div(f"My First App with Data, Graph, and Controls for {project_id}", className="text-primary text-center fs-3")
-    ]),
-
-    dbc.Row([
-        dbc.RadioItems(options=[{"label": x, "value": x} for x in ['pop', 'lifeExp', 'gdpPercap']],
-                       value='lifeExp',
-                       inline=True,
-                       id='radio-buttons-final')
     ]),
 
     dbc.Row([
