@@ -29,7 +29,7 @@ jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/
 
 app = Dash(
     __name__,
-    requests_pathname_prefix=jupyterhub_base_url,
+    requests_pathname_prefix=f"{jupyterhub_base_url}/",
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 
@@ -97,7 +97,7 @@ def subject_gender_distribution():
 
     return fig
 
-app.layout = html.Div([
+app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.H1(children=f"Dash App for {project.id}", style={'textAlign':'center'}),
@@ -113,7 +113,7 @@ app.layout = html.Div([
             # ])
         ], width=8)
     ], justify="center")
-])
+], fluid=True)
 
 if __name__ == "__main__":
     logging.info(f"Starting Dash app {__name__}")
