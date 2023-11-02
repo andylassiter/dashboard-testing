@@ -1,10 +1,14 @@
-import panel as pn
-import hvplot.pandas
-
-import pandas as pd
-import numpy as np
-import xnat
 import os
+
+import numpy as np
+import pandas as pd
+import xnat
+
+import hvplot.pandas
+import panel as pn
+import plotly.express as px
+
+pn.extension('plotly')
 
 # # For local testing
 # os.environ['JUPYTERHUB_USER'] = 'admin'
@@ -55,17 +59,18 @@ def get_subject_data():
 # Panel setup
 pn.extension(design='material')
 
+# Subject data table
 df = get_subject_data()
-df_pane = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=300)
+df_pane = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=500)
 
+# Histogram of age distribution
 histogram_age = df.hvplot.hist('age', bins=15, height=300)
 histogram_age.opts(xlabel='Age', ylabel='Count')
 histogram_age.opts(width=500, height=300)
 
-template = pn.template.BootstrapTemplate(
-    title=f"XNAT Panel App",
-    busy_indicator=pn.indicators.BooleanStatus(value=False)
-)
+# Create pie chart of gender distribution m vs f
+genders = get_subject_data()['gender'].value_counts()
+fig = px.pie(df, values=genders.values, names=genders.index)
 
 ## Card for basic project information
 project_card = pn.Card(
@@ -77,21 +82,33 @@ project_card = pn.Card(
     sizing_mode="stretch_width",
 )
 
+# Create template/layout
+template = pn.template.BootstrapTemplate(
+    title=f"XNAT Panel App for Project {project_id}",
+    busy_indicator=pn.indicators.BooleanStatus(value=False)
+)
+
+# Add content
 template.main.append(
     pn.Column(
-        project_card,
+        pn.pane.Markdown(f"### Subject Data"),
+        df_pane,
         pn.Row(
             pn.Column(
-                pn.pane.Markdown(f"**Subject Data**"),
-                df_pane
-            ),
-            pn.Spacer(),
-            pn.Column(
-                pn.pane.Markdown(f"**Subject Age Distribution**"),
+                pn.pane.Markdown(f"### Subject Age Distribution"),
                 histogram_age
+            ),
+            pn.Column(
+                pn.pane.Markdown(f"### Gender Distribution"),
+                fig
             )
-        ),
+        )
     )
+)
+
+# Add sidebar
+template.sidebar.append(
+    project_card
 )
 
 template.servable()
