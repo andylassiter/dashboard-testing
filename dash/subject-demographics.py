@@ -67,7 +67,7 @@ def get_subject_data():
 df = get_subject_data()
 
 def subject_age_distribution():
-    ages = get_subject_data()['age']
+    ages = df['age']
 
     fig = px.histogram(ages, nbins=20)
     fig.update_layout(
@@ -83,7 +83,7 @@ def subject_age_distribution():
     return fig
 
 def subject_gender_distribution():
-    genders = get_subject_data()['gender'].value_counts()
+    genders = df['gender'].value_counts()
 
     fig = px.pie(genders, values=genders.values, names=genders.index)
     fig.update_layout(
@@ -114,4 +114,4 @@ app.layout = dbc.Container([
 ], fluid=True)
 
 logging.info("Starting Dash app")
-app.run_server(port=8050, host='0.0.0.0', debug=True)
+app.run_server(debug=True)
