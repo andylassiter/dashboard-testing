@@ -45,15 +45,9 @@ project = connection.projects[project_id]
 logging.info(f"Connected to XNAT project {project_id}")
 
 # Cache for subject data
-subject_data_cache = None
-
 # Compile subject data or return cached data
 def get_subject_data():
-    global subject_data_cache
-    
-    if subject_data_cache is not None:
-        return subject_data_cache
-    
+     
     subject_data = {
         'id': [],
         'gender': [],
@@ -66,12 +60,13 @@ def get_subject_data():
         subject_data['age'].append(subject.demographics.age)
         
     df = pd.DataFrame(subject_data)
-    
-    subject_data_cache = df
 
     return df
 
 df = get_subject_data()
+
+logging.info(f"Compiled subject data for {len(df)} subjects")
+
 
 # App layout
 app.layout = dbc.Container([
