@@ -9,12 +9,12 @@ import plotly.express as px
 from dash import Dash, dash_table, dcc, html
 
 # For local testing
-os.environ['JUPYTERHUB_USER'] = 'admin'
-os.environ['JUPYTERHUB_SERVICE_PREFIX'] = '/'
-os.environ['XNAT_HOST'] = 'http://localhost'
-os.environ['XNAT_USER'] = 'admin'
-os.environ['XNAT_PASS'] = 'admin'
-os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
+# os.environ['JUPYTERHUB_USER'] = 'admin'
+# os.environ['JUPYTERHUB_SERVICE_PREFIX'] = '/'
+# os.environ['XNAT_HOST'] = 'http://localhost'
+# os.environ['XNAT_USER'] = 'admin'
+# os.environ['XNAT_PASS'] = 'admin'
+# os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
 
 # Logging to a file
 logging.basicConfig(
