@@ -46,46 +46,6 @@ project = connection.projects[project_id]
 # Cache for subject data
 subject_data_cache = None
 
-# Logging to a file
-import logging
-
-logging.basicConfig(
-    filename='dash.log',
-    level=logging.DEBUG,
-    format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'
-)
-
-# For local testing
-os.environ['JUPYTERHUB_USER'] = 'admin'
-os.environ['JUPYTERHUB_SERVICE_PREFIX'] = ''
-os.environ['XNAT_HOST'] = 'http://localhost'
-os.environ['XNAT_USER'] = 'admin'
-os.environ['XNAT_PASS'] = 'admin'
-os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
-
-# Dash setup
-user = os.getenv('JUPYTERHUB_USER')
-jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
-
-app = Dash(
-    __name__,
-    requests_pathname_prefix=f"{jupyterhub_base_url}/",
-    external_stylesheets=[dbc.themes.BOOTSTRAP]
-)
-
-# XNAT setup
-xnat_host = os.getenv('XNAT_HOST')
-xnat_user = os.getenv('XNAT_USER')
-xnat_password = os.getenv('XNAT_PASS')
-
-project_id = os.getenv('XNAT_ITEM_ID')
-
-connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password)
-project = connection.projects[project_id]
-
-# Cache for subject data
-subject_data_cache = None
-
 # Compile subject data or return cached data
 def get_subject_data():
     global subject_data_cache
