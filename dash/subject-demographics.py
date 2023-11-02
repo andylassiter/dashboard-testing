@@ -8,13 +8,13 @@ import plotly.express as px
 
 from dash import Dash, dash_table, dcc, html
 
-# # For local testing
-# os.environ['JUPYTERHUB_USER'] = 'admin'
-# os.environ['JUPYTERHUB_SERVICE_PREFIX'] = ''
-# os.environ['XNAT_HOST'] = 'http://localhost'
-# os.environ['XNAT_USER'] = 'admin'
-# os.environ['XNAT_PASS'] = 'admin'
-# os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
+# For local testing
+os.environ['JUPYTERHUB_USER'] = 'admin'
+os.environ['JUPYTERHUB_SERVICE_PREFIX'] = '/'
+os.environ['XNAT_HOST'] = 'http://localhost'
+os.environ['XNAT_USER'] = 'admin'
+os.environ['XNAT_PASS'] = 'admin'
+os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
 
 # Logging to a file
 logging.basicConfig(
@@ -29,7 +29,7 @@ jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/
 
 app = Dash(
     __name__,
-    requests_pathname_prefix=f"{jupyterhub_base_url}/",
+    requests_pathname_prefix=jupyterhub_base_url,
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 
@@ -102,15 +102,15 @@ app.layout = html.Div([
         dbc.Col([
             html.H1(children=f"Dash App for {project.id}", style={'textAlign':'center'}),
             html.H2(children=f"Subject Demographics for {project.id}"),
-            dash_table.DataTable(data=df.to_dict('records'), page_size=10),
-            dbc.Row([
-                dbc.Col([
-                    dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
-                ], width=6),
-                dbc.Col([
-                    dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
-                ], width=6),
-            ])
+            # dash_table.DataTable(data=df.to_dict('records'), page_size=10),
+            # dbc.Row([
+            #     dbc.Col([
+            #         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
+            #     ], width=6),
+            #     dbc.Col([
+            #         dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
+            #     ], width=6),
+            # ])
         ], width=8)
     ], justify="center")
 ])
