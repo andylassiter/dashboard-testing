@@ -18,10 +18,12 @@ app = Dash(
     external_stylesheets=[dbc.themes.CERULEAN]
 )
 
+project_id = os.getenv('XNAT_ITEM_ID')
+
 # App layout
 app.layout = dbc.Container([
     dbc.Row([
-        html.Div(f"My First App with Data, Graph, and Controls for Xnat", className="text-primary text-center fs-3")
+        html.Div(f"My First App with Data, Graph, and Controls for {project_id}", className="text-primary text-center fs-3")
     ]),
 
     dbc.Row([
