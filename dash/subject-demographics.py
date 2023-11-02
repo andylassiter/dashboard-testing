@@ -43,6 +43,8 @@ project_id = os.getenv('XNAT_ITEM_ID')
 connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password)
 project = connection.projects[project_id]
 
+logging.info(f"Connected to XNAT project {project.id}")
+
 # Compile subject data or return cached data
 def get_subject_data():
     subject_data = {
@@ -57,6 +59,8 @@ def get_subject_data():
         subject_data['age'].append(subject.demographics.age)
         
     df = pd.DataFrame(subject_data)
+
+    logging.info(f"Retrieved subject data for {project_id}")
 
     return df
 
@@ -74,6 +78,8 @@ def subject_age_distribution():
         bargroupgap=0.1
     )
 
+    logging.info(f"Created subject age distribution plot")
+
     return fig
 
 def subject_gender_distribution():
@@ -84,6 +90,8 @@ def subject_gender_distribution():
         title_text='Subject Genders',
         showlegend=True
     )
+
+    logging.info("Created subject gender distribution plot")
 
     return fig
 
@@ -105,4 +113,5 @@ app.layout = dbc.Container([
     ], justify="center")
 ], fluid=True)
 
+logging.info("Starting Dash app")
 app.run_server(port=8050, host='0.0.0.0', debug=True)
