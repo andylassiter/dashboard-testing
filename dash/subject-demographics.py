@@ -19,7 +19,7 @@ from dash import Dash, dash_table, dcc, html
 # Logging to a file
 logging.basicConfig(
     filename='dash.log',
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'
 )
 
@@ -97,23 +97,27 @@ def subject_gender_distribution():
 
     return fig
 
-app.layout = dbc.Container([
-    dbc.Row([
-        dbc.Col([
-            html.H1(children=f"Dash App for {project.id}", style={'textAlign':'center'}),
-            html.H2(children=f"Subject Demographics for {project.id}"),
-            # dash_table.DataTable(data=df.to_dict('records'), page_size=10),
-            # dbc.Row([
-            #     dbc.Col([
-            #         dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
-            #     ], width=6),
-            #     dbc.Col([
-            #         dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
-            #     ], width=6),
-            # ])
-        ], width=8)
-    ], justify="center")
-], fluid=True)
+# app.layout = dbc.Container([
+#     dbc.Row([
+#         dbc.Col([
+#             html.H1(children=f"Dash App for {project.id}", style={'textAlign':'center'}),
+#             html.H2(children=f"Subject Demographics for {project.id}"),
+#             dash_table.DataTable(data=df.to_dict('records'), page_size=10),
+#             dbc.Row([
+#                 dbc.Col([
+#                     dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
+#                 ], width=6),
+#                 dbc.Col([
+#                     dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
+#                 ], width=6),
+#             ])
+#         ], width=8)
+#     ], justify="center")
+# ], fluid=True)
+
+app.layout = html.Div([
+    html.H1(children='Title of Dash App', style={'textAlign':'center'})
+])
 
 
 app.run_server(port=8050, host='0.0.0.0', debug=True)
