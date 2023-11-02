@@ -1,27 +1,12 @@
-import logging
-import os
-import xnat
-
-import dash_bootstrap_components as dbc
+# Import packages
+from dash import Dash, html, dash_table, dcc, callback, Output, Input
 import pandas as pd
 import plotly.express as px
+import dash_bootstrap_components as dbc
+import os
 
-from dash import Dash, dash_table, dcc, html
-
-# For local testing
-# os.environ['JUPYTERHUB_USER'] = 'admin'
-# os.environ['JUPYTERHUB_SERVICE_PREFIX'] = '/'
-# os.environ['XNAT_HOST'] = 'http://localhost'
-# os.environ['XNAT_USER'] = 'admin'
-# os.environ['XNAT_PASS'] = 'admin'
-# os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
-
-# Logging to a file
-logging.basicConfig(
-    filename='dash.log',
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'
-)
+# Incorporate data
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
 
 # Dash setup
 user = os.getenv('JUPYTERHUB_USER')
@@ -30,94 +15,43 @@ jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/
 app = Dash(
     __name__,
     requests_pathname_prefix=f"{jupyterhub_base_url}/",
-    external_stylesheets=[dbc.themes.BOOTSTRAP]
+    external_stylesheets=[dbc.themes.CERULEAN]
 )
 
-# XNAT setup
-xnat_host = os.getenv('XNAT_HOST')
-xnat_user = os.getenv('XNAT_USER')
-xnat_password = os.getenv('XNAT_PASS')
+# App layout
+app.layout = dbc.Container([
+    dbc.Row([
+        html.Div('My First App with Data, Graph, and Controls', className="text-primary text-center fs-3")
+    ]),
 
-project_id = os.getenv('XNAT_ITEM_ID')
+    dbc.Row([
+        dbc.RadioItems(options=[{"label": x, "value": x} for x in ['pop', 'lifeExp', 'gdpPercap']],
+                       value='lifeExp',
+                       inline=True,
+                       id='radio-buttons-final')
+    ]),
 
-connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password)
-project = connection.projects[project_id]
+    dbc.Row([
+        dbc.Col([
+            dash_table.DataTable(data=df.to_dict('records'), page_size=12, style_table={'overflowX': 'auto'})
+        ], width=6),
 
-# Cache for subject data
-subject_data_cache = None
+        dbc.Col([
+            dcc.Graph(figure={}, id='my-first-graph-final')
+        ], width=6),
+    ]),
 
-# Compile subject data or return cached data
-def get_subject_data():
-    global subject_data_cache
-    
-    if subject_data_cache is not None:
-        return subject_data_cache
-    
-    subject_data = {
-        'id': [],
-        'gender': [],
-        'age': []
-    }
+], fluid=True)
 
-    for subject in project.subjects.values():
-        subject_data['id'].append(subject.label)
-        subject_data['gender'].append(subject.demographics.gender)
-        subject_data['age'].append(subject.demographics.age)
-        
-    df = pd.DataFrame(subject_data)
-    
-    subject_data_cache = df
-
-    return df
-
-df = get_subject_data()
-
-def subject_age_distribution():
-    ages = get_subject_data()['age']
-
-    fig = px.histogram(ages, nbins=20)
-    fig.update_layout(
-        title_text='Subject Ages',
-        xaxis_title_text='Age',
-        yaxis_title_text='Count',
-        bargap=0.2,
-        bargroupgap=0.1
-    )
-
+# Add controls to build the interaction
+@callback(
+    Output(component_id='my-first-graph-final', component_property='figure'),
+    Input(component_id='radio-buttons-final', component_property='value')
+)
+def update_graph(col_chosen):
+    fig = px.histogram(df, x='continent', y=col_chosen, histfunc='avg')
     return fig
 
-def subject_gender_distribution():
-    genders = get_subject_data()['gender'].value_counts()
-
-    fig = px.pie(genders, values=genders.values, names=genders.index)
-    fig.update_layout(
-        title_text='Subject Genders',
-        showlegend=True
-    )
-
-    return fig
-
-# app.layout = dbc.Container([
-#     dbc.Row([
-#         dbc.Col([
-#             html.H1(children=f"Dash App for {project.id}", style={'textAlign':'center'}),
-#             html.H2(children=f"Subject Demographics for {project.id}"),
-#             dash_table.DataTable(data=df.to_dict('records'), page_size=10),
-#             dbc.Row([
-#                 dbc.Col([
-#                     dcc.Graph(id='subject-age-distribution', figure=subject_age_distribution())
-#                 ], width=6),
-#                 dbc.Col([
-#                     dcc.Graph(id='subject-gender-distribution', figure=subject_gender_distribution())
-#                 ], width=6),
-#             ])
-#         ], width=8)
-#     ], justify="center")
-# ], fluid=True)
-
-app.layout = html.Div([
-    html.H1(children='Title of Dash App', style={'textAlign':'center'})
-])
-
-
-app.run_server(port=8050, host='0.0.0.0', debug=True)
+# Run the app
+if __name__ == "__main__":
+    app.run_server(port=8050, host='0.0.0.0', debug=True)
