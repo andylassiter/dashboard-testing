@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.express as px
 import dash_bootstrap_components as dbc
 import os
+import xnat
 
 # Incorporate data
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
@@ -18,10 +19,20 @@ app = Dash(
     external_stylesheets=[dbc.themes.CERULEAN]
 )
 
+# XNAT setup
+xnat_host = os.getenv('XNAT_HOST')
+xnat_user = os.getenv('XNAT_USER')
+xnat_password = os.getenv('XNAT_PASS')
+
+project_id = os.getenv('XNAT_ITEM_ID')
+
+connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password)
+project = connection.projects[project_id]
+
 # App layout
 app.layout = dbc.Container([
     dbc.Row([
-        html.Div('My First App with Data, Graph, and Controls', className="text-primary text-center fs-3")
+        html.Div(f"My First App with Data, Graph, and Controls for {project_id}", className="text-primary text-center fs-3")
     ]),
 
     dbc.Row([
