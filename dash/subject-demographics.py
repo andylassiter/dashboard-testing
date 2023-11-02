@@ -44,15 +44,13 @@ def get_subject_data():
 
     return df
 
-df = get_subject_data()
-
-logging.info(f"dataframe: {df}")
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
 
 # Dash setup
 user = os.getenv('JUPYTERHUB_USER')
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
 
-logging.info(f"Creating Dash app named {__name__} with base URL {jupyterhub_base_url}/")
+logging.info(f"Creating Dash app named {__name__} with base URL {jupyterhub_base_url}")
 
 app = Dash(
     __name__,
@@ -60,7 +58,7 @@ app = Dash(
     external_stylesheets=[dbc.themes.CERULEAN]
 )
 
-logging.info(f"Created Dash app named {__name__} with base URL {jupyterhub_base_url}/")
+logging.info(f"Created Dash app named {__name__} with base URL {jupyterhub_base_url}")
 
 # App layout
 app.layout = dbc.Container([
@@ -79,8 +77,6 @@ app.layout = dbc.Container([
     ]),
 
 ], fluid=True)
-
-
 
 # Run the app
 if __name__ == "__main__":
