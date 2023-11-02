@@ -7,29 +7,11 @@ import os
 import logging
 import xnat
 
-# For local testing
-# os.environ['JUPYTERHUB_USER'] = 'admin'
-# os.environ['JUPYTERHUB_SERVICE_PREFIX'] = ''
-# os.environ['XNAT_HOST'] = 'http://localhost'
-# os.environ['XNAT_USER'] = 'admin'
-# os.environ['XNAT_PASS'] = 'admin'
-# os.environ['XNAT_ITEM_ID'] = 'C4KC-KiTS'
-
 # Logging to a file
 logging.basicConfig(
     filename='dash.log',
     level=logging.INFO,
     format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'
-)
-
-# Dash setup
-user = os.getenv('JUPYTERHUB_USER')
-jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
-
-app = Dash(
-    __name__,
-    requests_pathname_prefix=f"{jupyterhub_base_url}/",
-    external_stylesheets=[dbc.themes.CERULEAN]
 )
 
 # XNAT setup
@@ -44,43 +26,56 @@ project = connection.projects[project_id]
 
 logging.info(f"Connected to XNAT project {project_id}")
 
-# Cache for subject data
-# Compile subject data or return cached data
-def get_subject_data():
-     
-    subject_data = {
-        'id': [],
-        'gender': [],
-        'age': []
-    }
+# Incorporate data
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
 
-    for subject in project.subjects.values():
-        subject_data['id'].append(subject.label)
-        subject_data['gender'].append(subject.demographics.gender)
-        subject_data['age'].append(subject.demographics.age)
-        
-    df = pd.DataFrame(subject_data)
+# Dash setup
+user = os.getenv('JUPYTERHUB_USER')
+jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX', f"/jupyterhub/user/{user}/")
 
-    return df
+logging.info(f"Creating Dash app named {__name__} with base URL {jupyterhub_base_url}/")
 
-df = get_subject_data()
+app = Dash(
+    __name__,
+    requests_pathname_prefix=f"{jupyterhub_base_url}/",
+    external_stylesheets=[dbc.themes.CERULEAN]
+)
 
-logging.info(f"Compiled subject data for {len(df)} subjects")
-
+logging.info(f"Created Dash app named {__name__} with base URL {jupyterhub_base_url}/")
 
 # App layout
 app.layout = dbc.Container([
     dbc.Row([
-        html.Div('My First App with Data, Graph, and Controls', className="text-primary text-center fs-3")
+        html.Div(f"My First App with Data, Graph, and Controls for {project_id}", className="text-primary text-center fs-3")
+    ]),
+
+    dbc.Row([
+        dbc.RadioItems(options=[{"label": x, "value": x} for x in ['pop', 'lifeExp', 'gdpPercap']],
+                       value='lifeExp',
+                       inline=True,
+                       id='radio-buttons-final')
     ]),
 
     dbc.Row([
         dbc.Col([
             dash_table.DataTable(data=df.to_dict('records'), page_size=12, style_table={'overflowX': 'auto'})
         ], width=6),
+
+        dbc.Col([
+            dcc.Graph(figure={}, id='my-first-graph-final')
+        ], width=6),
     ]),
 
 ], fluid=True)
+
+# Add controls to build the interaction
+@callback(
+    Output(component_id='my-first-graph-final', component_property='figure'),
+    Input(component_id='radio-buttons-final', component_property='value')
+)
+def update_graph(col_chosen):
+    fig = px.histogram(df, x='continent', y=col_chosen, histfunc='avg')
+    return fig
 
 # Run the app
 if __name__ == "__main__":
