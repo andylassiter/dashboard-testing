@@ -1,4 +1,5 @@
 import argparse
+import os
 from flask import Flask
 
 # Create a Flask app instance
@@ -7,7 +8,8 @@ app = Flask(__name__)
 # Define a route for the root URL ("/")
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    project_id = os.getenv('XNAT_ITEM_ID')
+    return f"Flask app for project {project_id}"
 
 def main():
     parser = argparse.ArgumentParser(description='Simple Flask "Hello World" app with a customizable port.')
