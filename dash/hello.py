@@ -4,7 +4,6 @@ import os
 port = 8050
 
 jupyterhub_base_url = os.getenv('JUPYTERHUB_SERVICE_PREFIX')
-jupyterhub_base_url = f"{jupyterhub_base_url}proxy/{port}/"
 
 app = Dash(
     __name__,
