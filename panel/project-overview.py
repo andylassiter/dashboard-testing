@@ -32,9 +32,17 @@ def load_subject_data():
 
 
 # Panel setup
-title = pn.pane.Markdown(f"## Project Overview for {project_id}")
+template = pn.template.BootstrapTemplate(title=f'Project Overview for {project_id}')
+
 loading = pn.indicators.LoadingSpinner(value=False, width=100, height=100,visible=False)
-column = pn.Column(loading)
+main_column = pn.Column(loading)
+
+template.main.append(
+    pn.Row(
+        main_column,
+        sizing_mode="stretch_both",
+    )
+)
 
 #function to activate / deactivate loading widget      
 def load_display(x):
@@ -50,17 +58,12 @@ def display_subject_data():
     subject_data = load_subject_data()
     df = pd.DataFrame(subject_data)
     df_pane = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=250)
-    column.append(df_pane)
+    main_column.append(df_pane)
     load_display('off')
-
-app = pn.Column(
-    title,
-    column,
-)
 
 pn.state.onload(display_subject_data)
 
-app.servable()
+template.servable()
 
 
 # import os
