@@ -28,6 +28,7 @@ for subject in project.subjects.values():
     subject_data['id'].append(subject.label)
     subject_data['gender'].append(subject.demographics.gender)
     subject_data['age'].append(subject.demographics.age)
+    break;
         
 df = pd.DataFrame(subject_data)
 subject_data_panel = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=250)
