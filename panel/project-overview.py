@@ -1,15 +1,40 @@
 import panel as pn
 import os 
+import pandas as pd
+import xnat
 
 pn.extension()
 
-project = os.environ['XNAT_ITEM_ID']
+# XNAT setup
+xnat_host = os.getenv('XNAT_HOST')
+xnat_user = os.getenv('XNAT_USER')
+xnat_password = os.getenv('XNAT_PASS')
 
-def hello_world():
-    return f"## Hello, World! This is a Panel app for project {project}."
+project_id = os.environ['XNAT_ITEM_ID']
+
+connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password)
+project = connection.projects[project_id]
+
+# Cache for subject data
+subject_data_cache = None
+    
+subject_data = {
+    'id': [],
+    'gender': [],
+    'age': []
+}
+
+for subject in project.subjects.values():
+    subject_data['id'].append(subject.label)
+    subject_data['gender'].append(subject.demographics.gender)
+    subject_data['age'].append(subject.demographics.age)
+        
+df = pd.DataFrame(subject_data)
+subject_data_panel = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=250)
 
 app = pn.Column(
-    pn.pane.Markdown(hello_world()),
+    pn.pane.Markdown(f"## Project Overview for {project_id}"),
+    subject_data_panel
 )
 
 app.servable()
