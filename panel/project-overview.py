@@ -58,6 +58,8 @@ def display_subject_data():
     subject_data = load_subject_data()
     df = pd.DataFrame(subject_data)
     df_pane = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=250)
+    title = pn.pane.Markdown("Subjects")
+    main_column.append(title)
     main_column.append(df_pane)
     load_display('off')
 
