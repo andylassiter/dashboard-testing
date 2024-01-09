@@ -15,27 +15,50 @@ project_id = os.environ['XNAT_ITEM_ID']
 connection = xnat.connect(xnat_host, user=xnat_user, password=xnat_password, loglevel='INFO')
 project = connection.projects[project_id]
 
-# Cache for subject data
-subject_data_cache = None
-    
-subject_data = {
-    'id': [],
-    'gender': [],
-    'age': []
-}
+def load_subject_data():
 
-for subject in project.subjects.values():
-    subject_data['id'].append(subject.label)
-    subject_data['gender'].append(subject.demographics.gender)
-    subject_data['age'].append(subject.demographics.age)
-        
-df = pd.DataFrame(subject_data)
-subject_data_panel = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=250)
+    subject_data = {
+        'id': [],
+        'gender': [],
+        'age': []
+    }
+
+    for subject in project.subjects.values():
+        subject_data['id'].append(subject.label)
+        subject_data['gender'].append(subject.demographics.gender)
+        subject_data['age'].append(subject.demographics.age)
+
+    return subject_data
+
+
+# Panel setup
+title = pn.pane.Markdown(f"## Project Overview for {project_id}")
+loading = pn.indicators.LoadingSpinner(value=False, width=100, height=100,visible=False)
+column = pn.Column(loading)
+
+#function to activate / deactivate loading widget      
+def load_display(x):
+    if(x=='on'):
+        loading.value=True
+        loading.visible=True
+    if(x=='off'):
+        loading.value=False
+        loading.visible=False
+
+def display_subject_data():
+    load_display('on')
+    subject_data = load_subject_data()
+    df = pd.DataFrame(subject_data)
+    df_pane = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=250)
+    column.append(df_pane)
+    load_display('off')
 
 app = pn.Column(
-    pn.pane.Markdown(f"## Project Overview for {project_id}"),
-    subject_data_panel
+    title,
+    column,
 )
+
+pn.state.onload(display_subject_data)
 
 app.servable()
 
