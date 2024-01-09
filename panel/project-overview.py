@@ -3,7 +3,10 @@ import os
 import pandas as pd
 import xnat
 
-pn.extension()
+import plotly.express as px
+import hvplot.pandas
+
+pn.extension('plotly')
 
 # XNAT setup
 xnat_host = os.getenv('XNAT_HOST')
@@ -55,12 +58,37 @@ def load_display(x):
 
 def display_subject_data():
     load_display('on')
+
     subject_data = load_subject_data()
     df = pd.DataFrame(subject_data)
     df_pane = pn.pane.DataFrame(df, sizing_mode="stretch_both", max_height=250)
+
     title = pn.pane.Markdown("### Subjects")
     main_column.append(title)
     main_column.append(df_pane)
+
+    # Histogram of age distribution
+    histogram_age = df.hvplot.hist('age', bins=15, height=300)
+    histogram_age.opts(xlabel='Age', ylabel='Count')
+    histogram_age.opts(width=500, height=300)
+
+    # Create pie chart of gender distribution m vs f
+    genders = df['gender'].value_counts()
+    fig = px.pie(df, values=genders.values, names=genders.index)
+
+    main_column.append(
+        pn.Row(
+            pn.Column(
+                pn.pane.Markdown(f"### Subject Age Distribution"),
+                histogram_age
+            ),
+            pn.Column(
+                pn.pane.Markdown(f"### Gender Distribution"),
+                fig
+            )
+        )
+    )
+
     load_display('off')
 
 pn.state.onload(display_subject_data)
