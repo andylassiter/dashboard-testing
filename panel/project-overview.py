@@ -6,9 +6,11 @@ pn.extension()
 project = os.environ['XNAT_ITEM_ID']
 
 def hello_world():
-    return f"Hello, World! This is a Panel app for project {project}."
+    return f"## Hello, World! This is a Panel app for project {project}."
 
-app = pn.Column(hello_world)
+app = pn.Column(
+    pn.pane.Markdown(hello_world()),
+)
 
 app.servable()
 
